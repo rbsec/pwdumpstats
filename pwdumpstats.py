@@ -67,6 +67,7 @@ parser.add_argument('-A', '--cracked-admins', help='List cracked admin accounts'
 parser.add_argument('-n', '--noncomplex', help='List users with non-complex passwords', action='store_true', default=False, dest='show_noncomplex', required=False)
 parser.add_argument('-E', '--empty', help='List users with empty passwords', action='store_true', default=False, dest='show_empty', required=False)
 parser.add_argument('-c', '--cracked', help='Only print cracked hashes', action='store_true', default=False, dest='cracked_only', required=False)
+parser.add_argument('-C', '--csv', help='CSV output for top 20', action='store_true', default=False, dest='csv_output', required=False)
 parser.add_argument('-d', '--domain', help='Print domains', action='store_true', default=False, dest='domain', required=False)
 parser.add_argument('-D', '--disabled', help='Include disabled accounts', action='store_true', default=False, dest='disabled', required=False)
 parser.add_argument('-p', '--pot', help='Specify pot file (john or hashcat format)', dest='pot_file', required=False)
@@ -378,19 +379,27 @@ if len(enterpriseadmins) > 0:
 
 
 if top20:
-    print(col.brown + "\nTop 20 hashes\n" + col.end)
-    for hash,count in sorted(hashcount.items(), key=lambda x: x[1], reverse=True)[:20]:
-        if hash in pot:
-            if pot[hash] == "":
-                pw = col.red + "[empty]" + col.end
-                hash = mask(hash)
+        print(col.brown + "\nTop 20 hashes\n" + col.end)
+        if args.csv_output:
+            print("Count,Hash,Password")
+        for hash,count in sorted(hashcount.items(), key=lambda x: x[1], reverse=True)[:20]:
+            if hash in pot:
+                if pot[hash] == "":
+                    pw = col.red + "[empty]" + col.end
+                    hash = mask(hash)
+                else:
+                    pw = mask(pot[hash])
+                    hash = mask(hash)
+                if args.csv_output:
+                    print(str(count) + "," + hash + "," + pw)
+                else:
+                    print(str(count) + "\t" + hash + "\t" + pw)
             else:
-                pw = mask(pot[hash])
                 hash = mask(hash)
-            print(str(count) + "\t" + hash + "\t" + pw)
-        else:
-            hash = mask(hash)
-            print(str(count) + "\t" + hash + "\t" + col.green + "[uncracked]" + col.end)
+                if args.csv_output:
+                    print(str(count) + "," + hash + ",[uncracked]")
+                else:
+                    print(str(count) + "\t" + hash + "\t" + col.green + "[uncracked]" + col.end)
 
 if sys.stdout.isatty():
     print("")
