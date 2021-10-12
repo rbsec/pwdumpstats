@@ -22,6 +22,7 @@ optional arguments:
   -n, --noncomplex                      List users with non-complex passwords
   -E, --empty                           List users with empty passwords
   -c, --cracked                         Only print cracked hashes
+  -C, --csv                             CSV output for the top 20 hashes
   -d, --domain                          Print domains
   -D, --disabled                        Include disabled accounts
   -p POT_FILE, --pot POT_FILE           Specify pot file (john or hashcat format)
