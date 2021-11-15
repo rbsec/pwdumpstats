@@ -195,6 +195,9 @@ for filename in args.files:
                     enterpriseadmins.append(user)
                     admin = 1
                 users[user] = hash
+                # Admin
+                if admin == 1:
+                    admins.add(user)
                 if hash in pot:
                     crackedcount += 1
                     if args.domain:
@@ -223,7 +226,6 @@ for filename in args.files:
 
                     # Admin
                     if admin == 1:
-                        admins.add(user)
                         crackedadmins.add(user + ":" + mask(pot[hash]))
 
                 if not args.filter_file or user.lower() in map(unicode.lower, filterlist) :
