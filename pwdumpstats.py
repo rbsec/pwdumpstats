@@ -37,11 +37,11 @@ def print_percent(percent):
     if percent == 0:
         out = col.end
     elif percent < 20:
-        out = col.green + " (" + str(percent) + "%)" + col.end
+        out = f'{col.green} ({str(percent)}%){col.end}'
     elif percent < 70:
-        out = col.brown + " (" + str(percent) + "%)" + col.end
+        out = f'{col.brown} ({str(percent)}%{col.end}'
     else:
-        out = col.red + " (" + str(percent) + "%)" + col.end
+        out = f'{col.red} ({str(percent)}%{col.end}'
     return out
 
 def mask(s):
@@ -119,10 +119,10 @@ else:
         path = os.path.expandvars(os.path.expanduser(path))
         if os.path.isfile(path):
             pot_path = path
-            print('Using potfile: ' + pot_path)
+            print(f'Using potfile: {pot_path}')
             break
     if not pot_path:
-        print(col.red + "Could not find a pot file. Please specify one with --pot" + col.end)
+        print(f'{col.red}Could not find a pot file. Please specify one with --pot{col.end}')
         sys.exit(1)
 
 try:
@@ -138,10 +138,10 @@ try:
                     pw = ""
                 pot[hash] = pw
 except IOError:
-    print(col.red + "Could not open pot file: " + pot_path + col.end)
+    print(f'{col.red}Could not open pot file: {pot_path}{col.end}')
     sys.exit(1)
 if not pot:
-    print(col.red + "[-] Pot doesn't contain any NTLM hashes\n" + col.end)
+    print(f"{col.red}[-] Pot doesn't contain any NTLM hashes{col.end}\n")
 
 
 for filename in args.files:
@@ -224,13 +224,13 @@ for filename in args.files:
 
                     # Admin
                     if admin == 1:
-                        crackedadmins.add(user + ":" + mask(pot[hash]))
+                        crackedadmins.add(f'{user}:{mask(pot[hash])}')
 
-                if not args.filter_file or user.lower() in map(str.lower, filterlist) :
+                if not args.filter_file or user.casefold() in map(str.lower, filterlist) :
                     hashlist.append(hash)
 
 if not users:
-        print(col.red + "[-] No hashes loaded from " + ' '.join(map(str, args.files)) + col.end)
+        print(f"{col.red}[-] No hashes loaded from {' '.join(map(str, args.files))}{col.end}")
         sys.exit(1)
 
 # Reverse the dictionary
@@ -241,7 +241,7 @@ for key, value in users.items():
 for hash,users in sorted(hashlist_user.items()):
     dupecount = len(users)
     if args.filter_file:
-        if not set(map(str.lower, users)) & set(map(str.lower, filterlist)):
+        if not set(map(str.casefold, users)) & set(map(str.lower, filterlist)):
             continue
     if dupecount == 1:
         continue
@@ -258,28 +258,26 @@ for hash,count in sorted(hashcount.items(), key=lambda x: x[1], reverse=True):
         users = hashlist_user[hash]
         if hash in pot:
             if pot[hash] == "":
-                pw = col.red + "[empty]" + col.end
+                pw = f'{col.red}[empty]{col.end}'
                 hash = mask(hash)
             else:
                 pw = mask(pot[hash])
                 hash = mask(hash)
-            print(col.green + hash + " : " + pw + col.blue + \
-                    " [" + str(count) + "]" + col.end)
+            print(f'{col.green}{hash} : {pw}{col.blue} [{str(count)}]{col.end}')
         elif args.cracked_only:
             continue
         else:
             hash = mask(hash)
-            print(col.brown + hash + col.blue + " [" + str(count) \
-                    + "]" + col.end)
-        usorted = sorted(users, key = lambda s: s.lower())
+            print(f'{col.brown}{hash}{col.blue} [{str(count)}]{col.end}')
+        usorted = sorted(users, key = lambda s: s.casefold())
         for user in usorted:
-            if args.filter_file and user.lower() in map(str.lower, filterlist):
-                print(col.red + user + col.end) # Filtered users in red
-            elif "__history_" in user.lower():
-                    print(col.grey + user + col.end)
+            if args.filter_file and user.casefold() in map(str.lower, filterlist):
+                print(f'{col.red}{user}{col.end}') # Filtered users in red
+            elif "__history_" in user.casefold():
+                    print(f'{col.grey}{user}{col.end}')
             else:
-                if user.lower() in map(str.lower, admins):
-                    print(col.red + user + col.end) # Admins in red
+                if user.casefold() in map(str.lower, admins):
+                    print(f'{col.red}{user}{col.end}') # Admins in red
                 else:
                     print(user)
         print("")
@@ -287,26 +285,26 @@ for hash,count in sorted(hashcount.items(), key=lambda x: x[1], reverse=True):
 
 if args.show_full:
     if userpass and not args.filter_file:
-        print(col.red + "[+] Username == Password " + col.blue + "[" + str(len(userpass)) + "]" + col.end)
-        for user in sorted(userpass, key=lambda s: s.lower()):
+        print(f'{col.red}[+] Username == Password {col.blue}[{str(len(userpass))}{col.end}')
+        for user in sorted(userpass, key=lambda s: s.casefold()):
             print(user)
         print("")
 
 if args.show_noncomplex and len(noncomplex) > 0:
-    print(col.red + "[+] Non-complex Passwords (" + str(len(noncomplex)) +")" + col.end)
-    for user in sorted(noncomplex, key=lambda s: s.lower()):
+    print(f'{col.red}[+] Non-complex Passwords ({str(len(noncomplex))}){col.end}')
+    for user in sorted(noncomplex, key=lambda s: s.casefold()):
         print(user)
     print("")
 
 if args.show_empty and len(empty) > 0:
-    print(col.red + "[+] Empty Passwords (" + str(len(empty)) + ")" + col.end)
-    for user in sorted(empty, key=lambda s: s.lower()):
+    print(f'{col.red}[+] Empty Passwords ({str(len(empty))}){col.end}')
+    for user in sorted(empty, key=lambda s: s.casefold()):
         print(user)
     print("")
 
 if args.show_lm and len(lmusers) > 0:
-    print(col.red + "[+] LM Hashes (" + str(len(lmusers)) +")" + col.end)
-    for user in sorted(lmusers, key=lambda s: s.lower()):
+    print(f'{col.red}[+] LM Hashes ({str(len(lmusers))}){col.end}')
+    for user in sorted(lmusers, key=lambda s: s.casefold()):
         print(user)
     print("")
 
@@ -315,14 +313,14 @@ if crackedadmins:
     crackedadminspercent = float(len(crackedadmins)) / float(len(admins)) * 100
 
 if args.show_admins and len(admins) > 0:
-    print(col.red + "[+] Admins (" + str(len(admins)) + ")" + col.end)
-    for user in sorted(admins, key=lambda s: s.lower()):
+    print(f'{col.red}[+] Admins ({str(len(admins))}){col.end}')
+    for user in sorted(admins, key=lambda s: s.casefold()):
         print(user)
     print("")
 
 if args.show_crackedadmins and len(crackedadmins) > 0:
-    print(col.red + "[+] Cracked Admins (" + str(len(crackedadmins)) + ")" + col.end)
-    for user in sorted(crackedadmins, key=lambda s: s.lower()):
+    print(f'{col.red}[+] Cracked Admins ({str(len(crackedadmins))}){col.end}')
+    for user in sorted(crackedadmins, key=lambda s: s.casefold()):
         print(user)
     print("")
 
@@ -346,60 +344,60 @@ lmpercent = float(len(lmusers)) / float(totalcount) * 100
 
 
 
-print("\n" + col.brown + "##############" + col.end)
-print(col.brown + "# Statistics #" + col.end)
-print(col.brown + "##############" + col.end + "\n")
+print(f'\n{col.brown}##############{col.end}')
+print(f'{col.brown}# Statistics #{col.end}')
+print(f'{col.brown}##############{col.end}\n')
 if not args.filter_file:
-    print("Users:                  " + col.blue + str(usercount) + col.end)
-    print("LM Hashes (current):    " + col.blue + str(len(lmusers)) + print_percent(lmpercent) + col.end)
-    print("LM Hashes (history):    " + col.blue + str(len(lmhistory)) + col.end)
-    print("History hashes:         " + col.blue + str(historycount) + col.end)
-    print("Total hashes:           " + col.blue + str(totalcount) + col.end + "\n")
-    print("Cracked passwords:      " + col.blue + str(crackedcount)  + print_percent(crackedpercent))
-    print("Non-complex passwords:  " + col.blue + str(len(noncomplex)) + print_percent(noncomplexpercent))
-    print("Empty passwords:        " + col.blue + str(len(empty)) + print_percent(emptypercent) + "\n")
-    print("Duplicate passwords:    " + col.blue + str(totaldupes) + print_percent(dupepercent))
-    print("Highest duplicate:      " + col.blue + str(maxdupe) + print_percent(maxdupepercent))
-    print("Top 20 passwords:       " + col.blue + str(top20) + print_percent(top20percent) + "\n")
-    print("Username as password:   " + col.blue + str(len(userpass)) + print_percent(userpasspercent) + "\n")
+    print(f'Users:                  {col.blue}{str(usercount)}{col.end}')
+    print(f'LM Hashes (current):    {col.blue}{str(len(lmusers))}{print_percent(lmpercent)}{col.end}')
+    print(f'LM Hashes (history):    {col.blue}{str(len(lmhistory))}{col.end}')
+    print(f'History hashes:         {col.blue}{str(historycount)}{col.end}')
+    print(f'Total hashes:           {col.blue}{str(totalcount)}{col.end}\n')
+    print(f'Cracked passwords:      {col.blue}{str(crackedcount)}{print_percent(crackedpercent)}{col.end}')
+    print(f'Non-complex passwords:  {col.blue}{str(len(noncomplex))}{print_percent(noncomplexpercent)}{col.end}')
+    print(f'Empty passwords:        {col.blue}{str(len(empty))}{print_percent(emptypercent)}{col.end}\n')
+    print(f'Duplicate passwords:    {col.blue}{str(totaldupes)}{print_percent(dupepercent)}{col.end}')
+    print(f'Highest duplicate:      {col.blue}{str(maxdupe)}{print_percent(maxdupepercent)}{col.end}')
+    print(f'Top 20 passwords:       {col.blue}{str(top20)}{print_percent(top20percent)}{col.end}\n')
+    print(f'Username as password:   {col.blue}{str(len(userpass))}{print_percent(userpasspercent)}{col.end}\n')
 else:
-    print("Duplicate passwords:    " + col.blue + str(totaldupes) + col.end)
-    print("Highest duplicate:      " + col.blue + str(maxdupe) + col.end + "\n")
+    print(f'Duplicate passwords:    {col.blue}{str(totaldupes)}{col.end}')
+    print(f'Highest duplicate:      {col.blue}{str(maxdupe)}{col.end}\n')
 
 if len(admins) > 0:
-    print("Total admin accounts:   " + col.blue + str(len(admins)) + col.end)
+    print(f'Total admin accounts:   {col.blue}{str(len(admins))}{col.end}')
 if crackedadmins:
-    print("Cracked admin passwords " + col.blue + str(len(crackedadmins)) + print_percent(crackedadminspercent) + col.end)
+    print(f'Cracked admin passwords {col.blue}{str(len(crackedadmins))}{print_percent(crackedadminspercent)}{col.end}')
 if len(administrators) > 0:
-    print("Administrators:         " + col.blue + str(len(administrators)) + col.end)
+    print(f'Administrators:         {col.blue}{str(len(administrators))}{col.end}')
 if len(domainadmins) > 0:
-    print("Domain Admins:          " + col.blue + str(len(domainadmins)) + col.end)
+    print(f'Domain Admins:          {col.blue}{str(len(domainadmins))}{col.end}')
 if len(enterpriseadmins) > 0:
-    print("Enterprise Admins       " + col.blue + str(len(enterpriseadmins)) + col.end)
+    print(f'Enterprise Admins       {col.blue}{str(len(enterpriseadmins))}{col.end}')
 
 
 if top20:
-        print(col.brown + "\nTop 20 hashes\n" + col.end)
+        print(f'{col.brown}\nTop 20 hashes\n{col.end}')
         if args.csv_output:
             print("Count,Hash,Password")
         for hash,count in sorted(hashcount.items(), key=lambda x: x[1], reverse=True)[:20]:
             if hash in pot:
                 if pot[hash] == "":
-                    pw = col.red + "[empty]" + col.end
+                    pw = f'{col.red}[empty]{col.end}'
                     hash = mask(hash)
                 else:
                     pw = mask(pot[hash])
                     hash = mask(hash)
                 if args.csv_output:
-                    print(str(count) + "," + hash + "," + pw)
+                    print(f'{str(count)},{hash},{pw}')
                 else:
-                    print(str(count) + "\t" + hash + "\t" + pw)
+                    print(f'{str(count)}\t{hash}\t{pw}')
             else:
                 hash = mask(hash)
                 if args.csv_output:
-                    print(str(count) + "," + hash + ",[uncracked]")
+                    print(f'{str(count)},{hash},[uncracked]')
                 else:
-                    print(str(count) + "\t" + hash + "\t" + col.green + "[uncracked]" + col.end)
+                    print(f'{str(count)}\t{hash}\t{col.green}[uncracked]{col.end}')
 
 if sys.stdout.isatty():
     print("")
