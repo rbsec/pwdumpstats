@@ -60,6 +60,7 @@ parser.add_argument('--version', help="prints the current program version", acti
 parser.add_argument('-f', '--filter', help='Filter users', dest='filter_file', required=False)
 parser.add_argument('-H', '--history', help='Include password history hashes', action='store_true', default=False, dest='history', required=False)
 parser.add_argument('-s', '--show', help='Show full re-use output', action='store_true', default=False, dest='show_full', required=False)
+parser.add_argument('-S', '--show-all-cracked', help='Show all active users that have been cracked', action='store_true', default=False, dest='show_all_cracked', required=False)
 parser.add_argument('-a', '--admins', help='List admins', action='store_true', default=False, dest='show_admins', required=False)
 parser.add_argument('-A', '--cracked-admins', help='List cracked admin accounts', action='store_true', default=False, dest='show_crackedadmins', required=False)
 parser.add_argument('-n', '--noncomplex', help='List users with non-complex passwords', action='store_true', default=False, dest='show_noncomplex', required=False)
@@ -95,6 +96,7 @@ totaldupes = 0
 usercount = 0
 historycount = 0
 crackedcount = 0
+activecracked = {}
 maxdupe = 0
 noncomplex = []
 empty = []
@@ -225,6 +227,7 @@ for filename in args.files:
                     # Admin
                     if admin == 1:
                         crackedadmins.add(f'{user}:{mask(pot[hash])}')
+                    activecracked[user]=pot[hash]
 
                 if not args.filter_file or user.casefold() in map(str.lower, filterlist) :
                     hashlist.append(hash)
@@ -306,6 +309,12 @@ if args.show_lm and len(lmusers) > 0:
     print(f'{col.red}[+] LM Hashes ({str(len(lmusers))}){col.end}')
     for user in sorted(lmusers, key=lambda s: s.casefold()):
         print(user)
+    print("")
+
+if args.show_all_cracked and len (activecracked) > 0:
+    print(f'{col.red}[+] Cracked Active Users ({str(len(activecracked))}){col.end}')
+    for user in sorted(activecracked, key=str.casefold):
+        print(f"{user}:{mask(activecracked[user])}")
     print("")
 
 admins = set(administrators + domainadmins + enterpriseadmins)
