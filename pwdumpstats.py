@@ -39,9 +39,9 @@ def print_percent(percent):
     elif percent < 20:
         out = f'{col.green} ({str(percent)}%){col.end}'
     elif percent < 70:
-        out = f'{col.brown} ({str(percent)}%{col.end}'
+        out = f'{col.brown} ({str(percent)}%){col.end}'
     else:
-        out = f'{col.red} ({str(percent)}%{col.end}'
+        out = f'{col.red} ({str(percent)}%){col.end}'
     return out
 
 def mask(s):
