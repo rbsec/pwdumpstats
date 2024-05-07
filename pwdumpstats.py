@@ -314,10 +314,13 @@ if args.show_lm and len(lmusers) > 0:
 if args.show_all_cracked and len (activecracked) > 0:
     print(f'{col.red}[+] Cracked Active Users ({str(len(activecracked))}){col.end}')
     for user in sorted(activecracked, key=str.casefold):
-        if user.casefold() in map(str.lower, admins):
-            print(f"{col.red}{user}:{mask(activecracked[user])}{col.end}")
+        if args.filter_file and not user in filterlist:
+            continue
         else:
-            print(f"{user}:{mask(activecracked[user])}")
+            if user.casefold() in map(str.lower, admins):
+                print(f"{col.red}{user}:{mask(activecracked[user])}{col.end}")
+            else:
+                print(f"{user}:{mask(activecracked[user])}")
     print("")
 
 admins = set(administrators + domainadmins + enterpriseadmins)
