@@ -82,9 +82,6 @@ if len(sys.argv) < 2:
 
 args = parser.parse_args()
 
-if args.filter_file:
-    args.show_full = True
-
 hashlist = []
 filterlist = set()
 crackedadmins = set()
@@ -312,7 +309,10 @@ if args.show_lm and len(lmusers) > 0:
     print("")
 
 if args.show_all_cracked and len (activecracked) > 0:
-    print(f'{col.red}[+] Cracked Active Users ({str(len(activecracked))}){col.end}')
+    if args.filter_file:
+        print(f'{col.red}[+] Cracked Active Users ({str(len(filterlist.intersection(activecracked)))}){col.end}')
+    else:
+        print(f'{col.red}[+] Cracked Active Users ({str(len(activecracked))}){col.end}')
     for user in sorted(activecracked, key=str.casefold):
         if args.filter_file and not user in filterlist:
             continue
