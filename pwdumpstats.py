@@ -126,7 +126,7 @@ else:
 
 try:
     with io.open(pot_path, encoding="utf8", errors='replace') as potfile:
-        hashregex = re.compile('(^(\$NT\$)?([a-fA-F0-9]{32}):(.*)$)')
+        hashregex = re.compile('(^(\\$NT\\$)?([a-fA-F0-9]{32}):(.*)$)')
         for line in potfile:
             line = line.rstrip()
             m = hashregex.match(line)
@@ -170,7 +170,7 @@ for filename in args.files:
                 else:
                     usercount += 1
                 
-                m2 = re.match('^(.*?)\\\(.*)', user)
+                m2 = re.match('^(.*?)\\\\(.*)', user)
                 if m2:
                     if args.domain:
                         user = m2.group(0)              # Keep domain
