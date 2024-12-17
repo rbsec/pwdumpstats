@@ -170,7 +170,7 @@ for filename in args.files:
                 else:
                     usercount += 1
                 
-                m2 = re.match('^(.*?)\\\\(.*)', user)
+                m2 = re.match(r'^(.*?)\\(.*)', user)
                 if m2:
                     if args.domain:
                         user = m2.group(0)              # Keep domain
