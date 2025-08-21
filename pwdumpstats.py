@@ -286,6 +286,7 @@ for hash,count in sorted(hashcount.items(), key=lambda x: x[1], reverse=True):
 
 if args.show_reuse:
     print(f'{col.red}[+] Accounts With Duplicate Passwords{col.end}')
+    print('Count|Accounts')
     for hash,count in sorted(hashcount.items(), key=lambda x: x[1], reverse=True):
         users = hashlist_user[hash]
         usorted = sorted(users, key = lambda s: s.casefold())
