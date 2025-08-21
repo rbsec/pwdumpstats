@@ -17,6 +17,7 @@ optional arguments:
   -f FILTER_FILE, --filter FILTER_FILE  Filter users
   -H, --history                         Include password history hashes
   -s, --show                            Show full password re-use output
+  -r, --reuse                           Show a pipe-delimited list of accounts with re-used passwords
   -a, --admins                          List admins
   -A, --cracked-admins                  List cracked admin accounts
   -n, --noncomplex                      List users with non-complex passwords

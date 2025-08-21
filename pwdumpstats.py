@@ -251,6 +251,7 @@ for hash,users in sorted(hashlist_user.items()):
     totaldupes += dupecount
     hashcount[hash] = dupecount
 
+
 for hash,count in sorted(hashcount.items(), key=lambda x: x[1], reverse=True):
     if args.show_full:
         if args.mindupecount:
@@ -282,10 +283,14 @@ for hash,count in sorted(hashcount.items(), key=lambda x: x[1], reverse=True):
                 else:
                     print(user)
         print("")
-    if args.show_reuse:
+
+if args.show_reuse:
+    print(f'{col.red}[+] Accounts With Duplicate Passwords{col.end}')
+    for hash,count in sorted(hashcount.items(), key=lambda x: x[1], reverse=True):
         users = hashlist_user[hash]
         usorted = sorted(users, key = lambda s: s.casefold())
         print(f'{len(usorted)}|{", ".join(usorted)}')
+    print("")
 
 if args.show_full:
     if userpass and not args.filter_file:
