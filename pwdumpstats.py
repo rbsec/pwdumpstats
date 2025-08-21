@@ -60,6 +60,7 @@ parser.add_argument('--version', help="prints the current program version", acti
 parser.add_argument('-f', '--filter', help='Filter users', dest='filter_file', required=False)
 parser.add_argument('-H', '--history', help='Include password history hashes', action='store_true', default=False, dest='history', required=False)
 parser.add_argument('-s', '--show', help='Show full re-use output', action='store_true', default=False, dest='show_full', required=False)
+parser.add_argument('-r', '--reuse', help='Show a pipe-delimited list of accounts re-using passwords to generate a table from', action='store_true', default=False, dest='show_reuse', required=False)
 parser.add_argument('-S', '--show-all-cracked', help='Show all active users that have been cracked', action='store_true', default=False, dest='show_all_cracked', required=False)
 parser.add_argument('-a', '--admins', help='List admins', action='store_true', default=False, dest='show_admins', required=False)
 parser.add_argument('-A', '--cracked-admins', help='List cracked admin accounts', action='store_true', default=False, dest='show_crackedadmins', required=False)
@@ -281,7 +282,10 @@ for hash,count in sorted(hashcount.items(), key=lambda x: x[1], reverse=True):
                 else:
                     print(user)
         print("")
-
+    if args.show_reuse:
+        users = hashlist_user[hash]
+        usorted = sorted(users, key = lambda s: s.casefold())
+        print(f'{len(usorted)}|{", ".join(usorted)}')
 
 if args.show_full:
     if userpass and not args.filter_file:
